@@ -29,6 +29,7 @@ Node("tf_broadcaster")
   m_utm0_.northing = 0.0;
   m_utm0_.altitude = 0.0;
   m_utm0_.zone = 0;
+  m_is_first = true;
 }
 
 //---------------------------------------------------------------------//
@@ -84,6 +85,29 @@ const std_msgs::msg::Header MessageWrapper::createRosHeader(uint32_t device_time
   {
     header.stamp = rclcpp::Clock().now();
   }
+
+  return header;
+}
+
+
+std_msgs::msg::Header MessageWrapper::createRosHeaderSynced(uint32_t device_timestamp)
+{
+  std_msgs::msg::Header header;
+  
+  if (m_is_first) {
+    m_ros_time_init = rclcpp::Clock().now();
+    m_clock_time_init = device_timestamp;
+    m_is_first = false;
+  }
+
+  header.frame_id = m_frame_id_;
+  
+  double t_s = (double)(device_timestamp - m_clock_time_init) * 1e-6;
+  int sec = (int)(std::floor(t_s));
+  int nsec = (int)((t_s - (double)sec) * 1e9);
+
+  header.stamp = rclcpp::Duration(sec,nsec) + m_ros_time_init;
+
 
   return header;
 }
@@ -1016,11 +1040,11 @@ const sbg_driver::msg::SbgImuShort MessageWrapper::createSbgImuShortMessage(cons
   return imu_short_message;
 }
 
-const sensor_msgs::msg::Imu MessageWrapper::createRosImuMessage(const sbg_driver::msg::SbgImuData& ref_sbg_imu_msg, const sbg_driver::msg::SbgEkfQuat& ref_sbg_quat_msg) const
+sensor_msgs::msg::Imu MessageWrapper::createRosImuMessage(const sbg_driver::msg::SbgImuData& ref_sbg_imu_msg, const sbg_driver::msg::SbgEkfQuat& ref_sbg_quat_msg)
 {
   sensor_msgs::msg::Imu imu_ros_message;
 
-  imu_ros_message.header = createRosHeader(ref_sbg_imu_msg.time_stamp);
+  imu_ros_message.header = createRosHeaderSynced(ref_sbg_imu_msg.time_stamp);
 
   imu_ros_message.orientation                       = ref_sbg_quat_msg.quaternion;
   imu_ros_message.angular_velocity          = ref_sbg_imu_msg.delta_angle;

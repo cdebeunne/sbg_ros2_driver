@@ -99,6 +99,11 @@ private:
   bool                                m_use_enu_;
   TimeReference                       m_time_reference_;
   UTM0					              m_utm0_;
+  
+  // For time sync
+  bool                                m_is_first;
+  rclcpp::Time                        m_ros_time_init;
+  uint32_t                            m_clock_time_init;
 
   bool                                m_odom_enable_;
   bool                                m_odom_publish_tf_;
@@ -141,6 +146,8 @@ private:
    * \return                        ROS header message.
    */
   const std_msgs::msg::Header createRosHeader(uint32_t device_timestamp) const;
+  
+  std_msgs::msg::Header createRosHeaderSynced(uint32_t device_timestamp);
 
   /*!
    * Convert INS timestamp from a SBG device to UNIX timestamp.
@@ -543,7 +550,7 @@ public:
    * \param[in] ref_sbg_quat_msg    SBG_ROS Quaternion message.
    * \return                        ROS standard IMU message.
    */
-  const sensor_msgs::msg::Imu createRosImuMessage(const sbg_driver::msg::SbgImuData& ref_sbg_imu_msg, const sbg_driver::msg::SbgEkfQuat& ref_sbg_quat_msg) const;
+  sensor_msgs::msg::Imu createRosImuMessage(const sbg_driver::msg::SbgImuData& ref_sbg_imu_msg, const sbg_driver::msg::SbgEkfQuat& ref_sbg_quat_msg);
 
   /*!
    * Create a ROS standard odometry message from SBG messages.

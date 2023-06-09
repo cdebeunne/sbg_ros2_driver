@@ -1,6 +1,12 @@
 /**:
   ros__parameters:
-    # Configuration file for SBG device through an Uart interface.
+    # Configuration file for SBG Ellipse
+    # YAML
+    
+    # Ellipse-A - Magnetic-based
+    # Ellipse-E - External GNSS
+    # Ellipse-N - GNSS-based
+    # Ellipse-D - Dual-antenna GNSS
     
     driver:
       # Node frequency (Hz)
@@ -14,14 +20,14 @@
       # Enable ROS odometry messages.
       enable: false
       # Publish odometry transforms.
-      publishTf: true
+      publishTf: false
       # Odometry frame IDs.
       odomFrameId: "odom"
       baseFrameId: "base_link"
       initFrameId: "map"
 
     # Configuration of the device with ROS.
-    confWithRos: false
+    confWithRos: false 
     
     # Uart configuration
     uartConf:
@@ -29,7 +35,7 @@
       portName: "/dev/ttyUSB0"
     
       # Baude rate (4800 ,9600 ,19200 ,38400 ,115200 [default],230400 ,460800 ,921600)
-      baudRate: 115200
+      baudRate: 921600
     
       # Port Id
       # 0 PORT_A: Main communication interface. Full duplex.
@@ -60,7 +66,7 @@
       # 3 MARINE          Used in marine and underwater applications
       # 4 AIRPLANE        For fixed wings aircraft
       # 5 HELICOPTER      For rotary wing aircraft
-      motionProfile: 1
+      motionProfile: 5
     
     # IMU_ALIGNMENT_LEVER_ARM
     imuAlignementLeverArm:
@@ -132,7 +138,7 @@
       # 0 Measurement is not taken into account
       # 1 Measurement is rejected if inconsistent with current estimate (depending on error model)
       # 2 Measurement is always accepted
-      magnetometerRejectMode: 1
+      magnetometerRejectMode: 0
     
       # Theses parameters are only used for a calibration run
       calibration:
@@ -189,18 +195,18 @@
       # 0 Measurement is not taken into account
       # 1 Measurement is rejected if inconsistent with current estimate (depending on error model)
       # 2 Measurement is always accepted
-      posRejectMode: 1
+      posRejectMode: 0
       # Rejection mode for velocity (see posRejectMode values)
-      velRejectMode: 1
+      velRejectMode: 0
       # Rejection mode for true heading (see posRejectMode values)
-      hdtRejectMode: 1
+      hdtRejectMode: 0
     
     # Odometer configuration
     odom:
       # Odometer's gain Pulses/m
-      gain: 4800.0 
+      gain: 4800.0
       # User gain average error (%)
-      gain_error: 0
+      gain_error: 10
       # Odometer's direction
       # false: positive
       # true: negative
@@ -217,7 +223,7 @@
       # 0 Measurement is not taken into account
       # 1 Measurement is rejected if inconsistent with current estimate (depending on error model)
       # 2 Measurement is always accepted
-      rejectMode: 1
+      rejectMode: 0
     
     # ToDo: event & CAN configuration
     
@@ -251,24 +257,24 @@
 
       # Ros standard output:
       # Note: If true publish ROS standard messages.
-      ros_standard: false
+      ros_standard: true
 
       # Frame convention:
       # Note: If true messages are expressed in the ENU convention.
       #
       # true : ENU convention (X east, Y north, Z up)
       # false (default): NED convention (X north, Y east, Z down)
-      use_enu: false
+      use_enu: true
 
       # Frame ID:
       # Note: If the frame convention is NED so the default frame ID is (imu_link_ned)
       #       else if the convention is ENU so the default frame ID is (imu_link)
-      frame_id: "imu_link_ned"
+      frame_id: "imu_link"
     
       # Status general, clock, com aiding, solution, heave
-      log_status: 200
+      log_status: 8
       # Includes IMU status, acc., gyro, temp delta speeds and delta angles values
-      log_imu_data: 8
+      log_imu_data: 1
       # Includes roll, pitch, yaw and their accuracies on each axis
       log_ekf_euler: 8
       # Includes the 4 quaternions values
@@ -278,7 +284,7 @@
       # Heave, surge and sway and accelerations on each axis for up to 4 points
       log_ship_motion: 0
       # Provides UTC time reference
-      log_utc_time: 200
+      log_utc_time: 8
       # Magnetic data with associated accelerometer on each axis
       log_mag: 0
       # Magnetometer calibration data (raw buffer)
@@ -301,4 +307,4 @@
       # Air data
       log_air_data: 0
       # Short IMU data
-      log_imu_short: 8
+      log_imu_short: 1
